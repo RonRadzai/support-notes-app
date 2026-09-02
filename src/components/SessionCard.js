@@ -7,7 +7,6 @@ import { KebabMenu } from './KebabMenu';
 import { OrgLookup } from './OrgLookup';
 import { UserLookup } from './UserLookup';
 import { ZendeskModal } from './ZendeskModal';
-import { SyncBadge } from './SyncBadge';
 
 const toEditData = s => ({
   customer_name: s.customer_name,
@@ -264,7 +263,6 @@ export function SessionCard({ session, onRefresh, onViewScreenshot, showToast, s
           <div className="session-meta">
             {session.crm_org_id && <span>CRM: {session.crm_org_id}</span>}
             {session.customer_email && <span>{session.customer_email}</span>}
-            <SyncBadge session={session} />
           </div>
           {collapsed && (
             <div className="session-summary">

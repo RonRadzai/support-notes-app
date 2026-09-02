@@ -60,7 +60,7 @@ async function walkthrough(page) {
   await page.waitForSelector('.search-indicator');
   await pause(page, 2200);
 
-  // 2. Expand a session: issues, statuses, helpdesk sync badge
+  // 2. Expand a session: issues, statuses, resolutions
   await page.locator('.list-row').first().click();
   await page.waitForSelector('.list-row-expanded .session-card');
   await pause(page, 2800);
@@ -93,18 +93,14 @@ async function walkthrough(page) {
   await typeInto(page.locator('.session-form .field:not(.field-dimmed) textarea.auto-expand').nth(1), 'Viewer role created; invitations sent.', 8, 160);
   await pause(page, 1500);
 
-  // 5. Save: the note appears at the top, first pending, then synced to the helpdesk
+  // 5. Save: the note lands in today's group (it syncs to the helpdesk in the background)
   await page.click('.session-form .submit-btn:not(.submit-btn--zendesk)');
   await page.waitForSelector('.list-row:has-text("Aisha Rahman")');
   await page.evaluate(() => window.scrollTo(0, 0));
-  await pause(page, 2600);
-  await page.click('.search-bar button:has-text("Clear")'); // refetch: the sync has landed by now
-  // Seeded sessions later today can sort above the new note, so look for its row anywhere on the page.
-  await page.waitForFunction(() => [...document.querySelectorAll('.list-row')]
-    .some(r => r.textContent.includes('Aisha Rahman') && r.textContent.includes('Synced')), { timeout: 15000 });
-  await pause(page, 2600);
+  await pause(page, 3000);
 
-  // 6. Open the note and start a helpdesk ticket from it
+  // 6. Open the note and start a helpdesk ticket from it. Seeded sessions later today can
+  // sort above the new note, so find its row by name rather than by position.
   await page.locator('.list-row:has-text("Aisha Rahman")').first().click();
   await page.waitForSelector('.list-row-expanded .session-card');
   await pause(page, 2000);

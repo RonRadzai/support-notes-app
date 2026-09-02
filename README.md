@@ -8,17 +8,17 @@ An internal tool for support agents to take structured notes during live custome
 | --- | --- |
 | ![Notes editor](docs/screenshots/notes-editor.png) | ![Lookup](docs/screenshots/lookup.png) |
 
-| Session history with helpdesk sync status |
+| Session history for one organization |
 | --- |
 | ![Session history](docs/screenshots/session-history.png) |
 
-The GIF is a scripted walkthrough recorded by [scripts/demo-gif.js](scripts/demo-gif.js) against the seeded app: one organization's session history, a new note with the contact picked from the directory, an issue logged and resolved, the note syncing to the helpdesk, and the create-ticket dialog.
+The GIF is a scripted walkthrough recorded by [scripts/demo-gif.js](scripts/demo-gif.js) against the seeded app: one organization's session history, a new note with the contact picked from the directory, an issue logged and resolved, the note saved, and the create-ticket dialog.
 
 ## What it does
 
 - **Session notes editor.** One note per call. The agent picks the customer, the app fills in their organization, account number and CRM id from the directory, and the agent logs one or more issues: product area, description, order numbers, tags, screenshots (paste or drag in), status, and resolution. Ctrl+S saves. Unsaved changes are protected on navigation.
 - **Organization and contact directory.** Typeahead fields search a directory of organizations and their people. Picking a contact fills the rest of the header. Every saved note adds new organizations and contacts to the directory, and a conflicting entry (same account number, different name) comes back as a warning instead of a silent overwrite.
-- **Helpdesk sync.** Every save queues a sync that writes the note to a custom object record in the helpdesk (Zendesk), keyed by the note's UUID so re-syncs update rather than duplicate. A nightly reconciliation catches anything that failed, and each note shows Synced, Sync pending, or Sync failed. Agents can also create a helpdesk ticket from one or more issues in two clicks; a poller closes the issue here when the ticket is solved there.
+- **Helpdesk sync.** Every save queues a sync that writes the note to a custom object record in the helpdesk (Zendesk), keyed by the note's UUID so re-syncs update rather than duplicate. A nightly reconciliation catches anything that failed, and `GET /api/zendesk-sync/status` lists pending and failed notes. Agents can also create a helpdesk ticket from one or more issues in two clicks; a poller closes the issue here when the ticket is solved there.
 - **Session history.** Every past session, grouped by day, searchable by customer, organization, account number, email, order number, note text, or date. Filter by status or date range, switch between list and card views, export to CSV.
 - **Issue tracking.** Issues move through Pending, Flagged for Review, Escalated and Solved. Escalation opens a pre-filled email to the chosen team and records who it went to. Each issue has a comment thread attributed to a team.
 - **Also included.** Recycle bin with a 10 day purge, nightly CSV and database backups, a manageable list of product areas, dark mode, and deep links to a single session.
@@ -86,10 +86,10 @@ What the scripts do:
 `docs/demo.gif` is about 40 seconds long and follows this path, which also works as a script for a live demo:
 
 1. Type an organization name in the search bar (for example `Maple Ridge`) and press Search to show that organization's history.
-2. Expand a session to show its issues, statuses and the helpdesk sync badge.
+2. Expand a session to show its issues, statuses and resolutions.
 3. Click **+ New Note**, start typing a customer name, and pick one from the dropdown. The organization, account number and email fill in.
 4. Add an issue: choose a product area, type a short description, mark it Resolved with a resolution note.
-5. Click **Save Note**. The new session appears at the top with **Helpdesk sync pending**, then flips to **Synced** on the next refresh.
+5. Click **Save Note**. The new session appears in today's group and syncs to the helpdesk in the background.
 6. Open the session's menu and choose **Create Zendesk Ticket** to show the ticket dialog, or **Sync to helpdesk** to force a sync.
 
 `npm run demo-gif` replays exactly this path with a headless browser and re-encodes the GIF. Re-seed first, since the walkthrough saves a note.
@@ -116,7 +116,7 @@ src/
     zendesk/             real.js (OAuth client credentials), mock.js (in-memory helpdesk)
     fixtures/            zendesk.json: fictional organizations, contacts and tickets
   App.js                 Root component: header, search, filters, new-note form, session list
-  components/            SessionCard, IssueCard, IssueForm, Lookup, ZendeskModal, SyncBadge, RecycleBin, ...
+  components/            SessionCard, IssueCard, IssueForm, Lookup, ZendeskModal, RecycleBin, ...
   config.js              Runtime config context (ticket URL base, mock flag) from GET /api/config
   constants.js, utils.js Shared values, date helpers, keyboard shortcuts
 data/                    app.db, orgs.csv, users.csv, screenshots/, backups/ (created by seed and the app, ignored by git)

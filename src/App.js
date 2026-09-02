@@ -356,6 +356,7 @@ export default function App() {
     <ConfigContext.Provider value={config}>
     <div className={`App${darkMode ? ' dark' : ''}`}>
       <header className="App-header">
+        <img className="header-watermark" src={`${process.env.PUBLIC_URL}/headset-watermark.png`} alt="" aria-hidden="true" />
         <div className="header-title-row">
           <div>
             <h1>Support Session Notes</h1>

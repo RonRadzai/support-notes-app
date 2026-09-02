@@ -94,7 +94,17 @@ body.dark { background-color: #0d0d0f; }
   box-shadow: 0 1px 2px rgba(20,30,50,0.06), 0 8px 24px rgba(20,30,50,0.10);
 }
 
-.App-header > * { position: relative; }
+.header-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;
+  opacity: 0.07;
+  pointer-events: none;
+}
+
+.App-header > *:not(.header-watermark) { position: relative; }
 
 .App-header h1 {
   font-size: 32px;
@@ -1119,17 +1129,3 @@ body.dark .field input[type="date"]::-webkit-calendar-picker-indicator { filter:
   }
 }
 
-/* HELPDESK SYNC STATUS */
-.sync-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 11px; font-weight: 600; letter-spacing: 0.01em;
-  padding: 2px 9px; border-radius: 10px; white-space: nowrap; line-height: 1.6;
-}
-.sync-badge::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor; flex-shrink: 0; }
-.sync-badge--synced  { color: #2e7d32; background: rgba(67,160,71,0.12); }
-.sync-badge--pending { color: #b26a00; background: rgba(255,152,0,0.16); }
-.sync-badge--error   { color: #c62828; background: rgba(229,57,53,0.12); }
-.App.dark .sync-badge--synced  { color: #81c784; background: rgba(67,160,71,0.18); }
-.App.dark .sync-badge--pending { color: #ffb74d; background: rgba(255,152,0,0.18); }
-.App.dark .sync-badge--error   { color: #ef9a9a; background: rgba(229,57,53,0.18); }
-.session-meta .sync-badge { margin-left: 4px; }

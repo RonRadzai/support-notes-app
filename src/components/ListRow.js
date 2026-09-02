@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { STATUS_COLORS } from '../constants';
 import { SessionCard } from './SessionCard';
-import { SyncBadge } from './SyncBadge';
 
 export function ListRow({ session, expandedListId, setExpandedListId, rowNumber, ...props }) {
   const expanded = expandedListId === session.id;
@@ -35,7 +34,6 @@ export function ListRow({ session, expandedListId, setExpandedListId, rowNumber,
           </div>
           <div className="list-row-right">
             <div className="summary-chips">
-              <SyncBadge session={session} compact />
               {Object.entries(
                 (session.issues || []).reduce((acc, i) => { acc[i.status] = (acc[i.status] || 0) + 1; return acc; }, {})
               ).map(([status, count]) => (
